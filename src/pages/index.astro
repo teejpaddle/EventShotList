@@ -1,10 +1,8 @@
 ---
 import Base from '../layouts/Base.astro';
 import { CalendarDays, Camera, Video, ChevronRight } from '@lucide/astro';
-import { summary } from '../data/events';
 import { url } from '../lib/url';
 
-const s = summary();
 const entries = [
   { href: 'events/', title: 'Events', body: 'Which events need coverage, how many people, and example shots for each.', Icon: CalendarDays },
   { href: 'photo-settings/', title: 'Photo Settings', body: 'Plain-language starting settings for Sony, Canon, and Nikon.', Icon: Camera },
@@ -14,15 +12,6 @@ const entries = [
 
 <Base>
   <h1 class="text-4xl font-semibold sm:text-5xl">Event Shot Lists</h1>
-  <p class="mt-4 max-w-prose text-lg text-ink-soft">
-    One place for media volunteers to see what each event needs, what good shots look like, and how to set up the camera.
-  </p>
-
-  <dl class="mt-8 flex flex-wrap gap-x-8 gap-y-3 border-y border-line py-4" aria-label="Annual summary">
-    <div><dt class="text-sm text-ink-soft">Events a year</dt><dd class="text-2xl font-semibold">{s.total}</dd></div>
-    <div><dt class="text-sm text-ink-soft">Photo only</dt><dd class="text-2xl font-semibold">{s.photoOnly}</dd></div>
-    <div><dt class="text-sm text-ink-soft">Photo &amp; video</dt><dd class="text-2xl font-semibold">{s.photoVideo}</dd></div>
-  </dl>
 
   <ul class="mt-10 grid gap-3 sm:grid-cols-3 sm:gap-4">
     {
