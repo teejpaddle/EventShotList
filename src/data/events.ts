@@ -4,7 +4,7 @@
  * To add or change an event, edit the `events` list below. Each staffing line
  * is one entry: { count, side, roles }.
  *   count  how many people
- *   side   'eSide' (external-side media team) or 'iSide' (internal-side media team)
+ *   side   'Bhaiyo' or 'Baheno' (the two wings' media teams)
  *   roles  ['Primary'], ['Secondary'], ['Primary', 'Secondary'], or [] if the plan
  *          lists no role (leave it empty rather than guessing)
  *
@@ -16,7 +16,7 @@
 
 export type Season = 'Spring' | 'Summer' | 'Fall' | 'Winter';
 export type Coverage = 'Photo Only' | 'Photo & Video';
-export type Side = 'eSide' | 'iSide';
+export type Side = 'Bhaiyo' | 'Baheno';
 export type Role = 'Primary' | 'Secondary';
 
 export interface Staff {
@@ -45,8 +45,8 @@ export const events: EventItem[] = [
     season: 'Spring',
     coverage: 'Photo Only',
     photo: [
-      { count: 1, side: 'eSide', roles: ['Primary'] },
-      { count: 1, side: 'iSide', roles: ['Secondary'] },
+      { count: 1, side: 'Bhaiyo', roles: ['Primary'] },
+      { count: 1, side: 'Baheno', roles: ['Secondary'] },
     ],
     video: [],
     gallery: 'samaiyo',
@@ -56,7 +56,7 @@ export const events: EventItem[] = [
     name: 'Swaminarayan Jayanti & Ram Navmi (Mahila)',
     season: 'Spring',
     coverage: 'Photo Only',
-    photo: [{ count: 1, side: 'iSide', roles: ['Primary'] }],
+    photo: [{ count: 1, side: 'Baheno', roles: ['Primary'] }],
     video: [],
     gallery: 'samaiyo',
     parent: 'swaminarayan-jayanti-ram-navmi',
@@ -67,12 +67,12 @@ export const events: EventItem[] = [
     season: 'Summer',
     coverage: 'Photo & Video',
     photo: [
-      { count: 2, side: 'eSide', roles: ['Primary', 'Secondary'] },
-      { count: 1, side: 'iSide', roles: ['Secondary'] },
+      { count: 2, side: 'Bhaiyo', roles: ['Primary', 'Secondary'] },
+      { count: 1, side: 'Baheno', roles: ['Secondary'] },
     ],
     video: [
-      { count: 1, side: 'eSide', roles: ['Primary'] },
-      { count: 1, side: 'iSide', roles: [] },
+      { count: 1, side: 'Bhaiyo', roles: ['Primary'] },
+      { count: 1, side: 'Baheno', roles: [] },
     ],
     gallery: null,
   },
@@ -81,7 +81,7 @@ export const events: EventItem[] = [
     name: 'Janmashtami',
     season: 'Summer',
     coverage: 'Photo Only',
-    photo: [{ count: 1, side: 'eSide', roles: ['Primary'] }],
+    photo: [{ count: 1, side: 'Bhaiyo', roles: ['Primary'] }],
     video: [],
     gallery: 'samaiyo',
   },
@@ -90,7 +90,7 @@ export const events: EventItem[] = [
     name: 'Janmashtami (Mahila)',
     season: 'Summer',
     coverage: 'Photo Only',
-    photo: [{ count: 1, side: 'iSide', roles: [] }],
+    photo: [{ count: 1, side: 'Baheno', roles: [] }],
     video: [],
     gallery: 'samaiyo',
     parent: 'janmashtami',
@@ -101,10 +101,10 @@ export const events: EventItem[] = [
     season: 'Summer',
     coverage: 'Photo & Video',
     photo: [
-      { count: 1, side: 'eSide', roles: ['Primary'] },
-      { count: 1, side: 'iSide', roles: [] },
+      { count: 1, side: 'Bhaiyo', roles: ['Primary'] },
+      { count: 1, side: 'Baheno', roles: [] },
     ],
-    video: [{ count: 1, side: 'eSide', roles: ['Primary'] }],
+    video: [{ count: 1, side: 'Bhaiyo', roles: ['Primary'] }],
     gallery: 'samaiyo',
   },
   {
@@ -112,7 +112,7 @@ export const events: EventItem[] = [
     name: 'Mahant Swami Maharaj Janma Jayanti',
     season: 'Fall',
     coverage: 'Photo Only',
-    photo: [{ count: 1, side: 'eSide', roles: ['Primary'] }],
+    photo: [{ count: 1, side: 'Bhaiyo', roles: ['Primary'] }],
     video: [],
     gallery: 'samaiyo',
   },
@@ -121,7 +121,7 @@ export const events: EventItem[] = [
     name: 'Mahant Swami Maharaj Janma Jayanti (Mahila)',
     season: 'Fall',
     coverage: 'Photo Only',
-    photo: [{ count: 1, side: 'iSide', roles: ['Primary'] }],
+    photo: [{ count: 1, side: 'Baheno', roles: ['Primary'] }],
     video: [],
     gallery: 'samaiyo',
     parent: 'mahant-swami-maharaj-janma-jayanti',
@@ -132,10 +132,10 @@ export const events: EventItem[] = [
     season: 'Fall',
     coverage: 'Photo & Video',
     photo: [
-      { count: 2, side: 'eSide', roles: ['Primary', 'Secondary'] },
-      { count: 1, side: 'iSide', roles: ['Secondary'] },
+      { count: 2, side: 'Bhaiyo', roles: ['Primary', 'Secondary'] },
+      { count: 1, side: 'Baheno', roles: ['Secondary'] },
     ],
-    video: [{ count: 1, side: 'eSide', roles: ['Primary'] }],
+    video: [{ count: 1, side: 'Bhaiyo', roles: ['Primary'] }],
     gallery: 'diwali',
   },
   {
@@ -144,12 +144,12 @@ export const events: EventItem[] = [
     season: 'Fall',
     coverage: 'Photo & Video',
     photo: [
-      { count: 1, side: 'eSide', roles: ['Primary'] },
-      { count: 1, side: 'iSide', roles: ['Secondary'] },
+      { count: 1, side: 'Bhaiyo', roles: ['Primary'] },
+      { count: 1, side: 'Baheno', roles: ['Secondary'] },
     ],
     video: [
-      { count: 1, side: 'eSide', roles: ['Primary'] },
-      { count: 1, side: 'iSide', roles: ['Secondary'] },
+      { count: 1, side: 'Bhaiyo', roles: ['Primary'] },
+      { count: 1, side: 'Baheno', roles: ['Secondary'] },
     ],
     gallery: 'kdc',
   },
@@ -158,7 +158,7 @@ export const events: EventItem[] = [
     name: 'Pramukh Swami Maharaj Janma Jayanti',
     season: 'Winter',
     coverage: 'Photo Only',
-    photo: [{ count: 1, side: 'eSide', roles: ['Primary'] }],
+    photo: [{ count: 1, side: 'Bhaiyo', roles: ['Primary'] }],
     video: [],
     gallery: 'samaiyo',
   },
@@ -167,7 +167,7 @@ export const events: EventItem[] = [
     name: 'Pramukh Swami Maharaj Janma Jayanti (Mahila)',
     season: 'Winter',
     coverage: 'Photo Only',
-    photo: [{ count: 1, side: 'iSide', roles: ['Primary'] }],
+    photo: [{ count: 1, side: 'Baheno', roles: ['Primary'] }],
     video: [],
     gallery: 'samaiyo',
     parent: 'pramukh-swami-maharaj-janma-jayanti',
@@ -178,13 +178,13 @@ export const STAFFING_FOOTNOTE =
   'Staffing represents recommended coverage and may be adjusted based on event size, program needs, and team availability.';
 
 export const LEGEND = [
-  { term: 'eSide', meaning: 'External-side media team' },
-  { term: 'iSide', meaning: 'Internal-side media team' },
+  { term: 'Bhaiyo', meaning: 'Bhaiyo wing media team' },
+  { term: 'Baheno', meaning: 'Baheno wing media team' },
   { term: 'Primary', meaning: 'Lead for that coverage' },
   { term: 'Secondary', meaning: 'Support for that coverage' },
 ] as const;
 
-/** "2 eSide (Primary & Secondary)", "1 iSide" — matches the coverage plan wording. */
+/** "2 Bhaiyo (Primary & Secondary)", "1 Baheno" — matches the coverage plan wording. */
 export function formatStaff(s: Staff): string {
   const roles = s.roles.length ? ` (${s.roles.join(' & ')})` : '';
   return `${s.count} ${s.side}${roles}`;

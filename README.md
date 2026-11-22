@@ -58,8 +58,8 @@ Open `src/data/events.ts` and copy an existing block inside `events: [...]`. For
   season: 'Summer',                 // Spring | Summer | Fall | Winter
   coverage: 'Photo Only',           // 'Photo Only' | 'Photo & Video'
   photo: [
-    { count: 1, side: 'eSide', roles: ['Primary'] },
-    { count: 1, side: 'iSide', roles: [] },          // no role listed → leave []
+    { count: 1, side: 'Bhaiyo', roles: ['Primary'] },
+    { count: 1, side: 'Baheno', roles: [] },          // no role listed → leave []
   ],
   video: [],                        // empty for photo-only events
   gallery: 'samaiyo',               // 'samaiyo' | 'diwali' | 'kdc' | null (no examples yet)
