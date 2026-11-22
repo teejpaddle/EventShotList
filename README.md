@@ -112,17 +112,27 @@ Menu names were checked against the official manuals for the Sony α7 IV, Canon 
 
 ## Deploy to GitHub Pages
 
-A ready-made GitHub Actions workflow is saved at `docs/deploy.yml.example`. Once installed, it builds the site and publishes it whenever `main` changes.
+The site is live at `https://teejpaddle.github.io/EventShotList/`. GitHub Pages sites are public.
 
-**It's not installed or turned on yet.** To publish:
+### Publish an update (current setup)
 
-1. Decide whether the site should be public. GitHub Pages sites are public on free plans, even from a private repo.
-2. Merge the feature branch into `main`.
-3. Add the workflow. Either:
-   - on GitHub, choose **Add file → Create new file**, name it `.github/workflows/deploy.yml`, paste in the contents of `docs/deploy.yml.example`, and commit; or
-   - copy the file locally to `.github/workflows/deploy.yml` and push. Your GitHub access token needs the `workflow` permission for this.
-4. On GitHub: **Settings → Pages → Build and deployment → Source: GitHub Actions**.
-5. The site will appear at `https://teejpaddle.github.io/EventShotList/`.
+After you change content and commit, run:
+
+```bash
+npm run deploy
+```
+
+This builds the site and pushes the finished files to the `gh-pages` branch, which GitHub Pages serves. Pages must be set to **Settings → Pages → Build and deployment → Source: Deploy from a branch → `gh-pages` / `(root)`**.
+
+> Don't point Pages at a source branch (like `main` or `feature/site-build`). GitHub would try to build it with Jekyll, which fails for an Astro site.
+
+### Optional: deploy automatically on every push
+
+A GitHub Actions workflow is saved at `docs/deploy.yml.example`. It builds and publishes whenever `main` changes, so nobody has to run `npm run deploy`. To switch to it:
+
+1. Make sure a `main` branch exists with the site code.
+2. On GitHub, choose **Add file → Create new file**, name it `.github/workflows/deploy.yml`, paste in the contents of `docs/deploy.yml.example`, and commit. (Pushing it from your computer instead needs a GitHub token with the `workflow` permission.)
+3. Change **Settings → Pages → Source** to **GitHub Actions**.
 
 Using a custom domain? Change `site` to your domain and `base` to `'/'` in `astro.config.mjs`.
 
