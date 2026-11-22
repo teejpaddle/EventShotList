@@ -1,0 +1,9 @@
+---
+/** Renders text that is either shared or different per camera brand. */
+import type { BrandText } from '../data/brands';
+import { brands } from '../data/brands';
+
+interface Props { value: BrandText; }
+const { value } = Astro.props;
+---
+{typeof value === 'string' ? value : brands.map((b) => <span data-brand-only={b.id}>{value[b.id]}</span>)}

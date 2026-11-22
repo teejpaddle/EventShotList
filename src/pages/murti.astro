@@ -1,0 +1,24 @@
+---
+import Base from '../layouts/Base.astro';
+import Gallery from '../components/Gallery.astro';
+import { galleries } from '../data/galleries';
+import { url } from '../lib/url';
+
+const g = galleries.murti;
+---
+
+<Base title="Murti" description="Reference shots of each murti, and how to photograph them.">
+  <h1 class="text-3xl font-semibold sm:text-4xl">Murti</h1>
+  <p class="mt-3 max-w-prose text-ink-soft">{g.intro}</p>
+
+  <ul class="mt-6 max-w-prose list-disc space-y-1 pl-5 text-sm text-ink-soft">
+    <li>Stand centered and hold the camera level with the murtis, so the frame and pillars look straight.</li>
+    <li>No flash. Use the <a href={url('photo-settings/#scenario-arti')}>low-light settings</a> if the mandir is dim.</li>
+    <li>Use f/5.6 to f/8 so every murti in the frame is sharp, and brace yourself or lean on a wall.</li>
+    <li>Take one shot of the full shringar, then closer details.</li>
+  </ul>
+
+  <div class="mt-10">
+    <Gallery slug="murti" headingLevel={2} />
+  </div>
+</Base>

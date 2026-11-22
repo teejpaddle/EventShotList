@@ -1,0 +1,14 @@
+---
+import { LEGEND } from '../data/events';
+---
+<section aria-labelledby="legend-title" class="rounded-md border border-line bg-surface p-4">
+  <h2 id="legend-title" class="text-sm font-semibold">Key</h2>
+  <dl class="mt-2 grid grid-cols-1 gap-x-6 gap-y-1 text-sm sm:grid-cols-2">
+    {LEGEND.map((l) => (
+      <div class="flex gap-2">
+        <dt class="font-semibold min-w-20">{l.term}</dt>
+        <dd class="text-ink-soft">{l.meaning}</dd>
+      </div>
+    ))}
+  </dl>
+</section>

@@ -1,0 +1,20 @@
+---
+import BrandText from './BrandText.astro';
+import type { Scenario } from '../data/brands';
+
+interface Props { scenario: Scenario; prefix?: string; }
+const { scenario } = Astro.props;
+---
+<li id={`scenario-${scenario.id}`} class="scroll-mt-24 rounded-md border border-line bg-surface p-4 sm:p-5">
+  <h3 class="text-lg font-semibold">{scenario.title}</h3>
+  <p class="mt-1 text-sm text-ink-soft">{scenario.when}</p>
+  <dl class="mt-4 divide-y divide-line border-y border-line text-sm">
+    {scenario.values.map((v) => (
+      <div class="grid grid-cols-[7.5rem_1fr] gap-3 py-2">
+        <dt class="font-medium text-ink-soft">{v.label}</dt>
+        <dd><BrandText value={v.value} /></dd>
+      </div>
+    ))}
+  </dl>
+  <p class="mt-3 text-sm"><span class="font-semibold">Tip: </span>{scenario.tip}</p>
+</li>

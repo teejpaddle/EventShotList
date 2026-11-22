@@ -1,0 +1,18 @@
+---
+import { Info } from '@lucide/astro';
+import { brands } from '../data/brands';
+---
+<aside class="rounded-md border border-line bg-surface p-4 text-sm text-ink-soft">
+  <p class="flex gap-2">
+    <Info size={18} class="mt-0.5 shrink-0 text-ink-soft" aria-hidden="true" />
+    <span>
+      {brands.map((b) => (
+        <span data-brand-only={b.id}>
+          {b.name} menu names on this page were checked against the official manual for the <strong class="text-ink">{b.basedOn}</strong>.
+          {' '}Menu names and locations vary by model, so check your camera’s manual if something doesn’t match:
+          {' '}<a href={b.manualUrl} rel="noopener">{b.basedOn} manual</a> · <a href={b.manualsHome} rel="noopener">{b.manualsHomeLabel}</a>.
+        </span>
+      ))}
+    </span>
+  </p>
+</aside>

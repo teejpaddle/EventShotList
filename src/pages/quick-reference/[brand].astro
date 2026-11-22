@@ -1,0 +1,85 @@
+---
+import Base from '../../layouts/Base.astro';
+import { ArrowLeft, Printer } from '@lucide/astro';
+import { brands, forBrand, type Brand, type BrandText } from '../../data/brands';
+import * as photo from '../../data/photo-settings';
+import * as video from '../../data/video-settings';
+import { url } from '../../lib/url';
+
+export function getStaticPaths() {
+  return brands.map((brand) => ({ params: { brand: brand.id }, props: { brand } }));
+}
+interface Props { brand: Brand; }
+const { brand } = Astro.props;
+const pick = (labels: string[], values: { label: string; value: BrandText }[]) =>
+  values.filter((v) => labels.includes(v.label)).map((v) => forBrand(v.value, brand.id)).join(' · ');
+---
+<Base title={`${brand.name} Quick Reference`} description={`One-page starting settings for ${brand.name} cameras.`}>
+  <div class="no-print flex flex-wrap items-center justify-between gap-3">
+    <a href={url('quick-reference/')} class="inline-flex min-h-11 items-center gap-1 text-sm font-medium no-underline hover:underline">
+      <ArrowLeft size={16} aria-hidden="true" /> All brands
+    </a>
+    <button type="button" onclick="window.print()" class="inline-flex min-h-11 items-center gap-2 rounded-sm border border-line-strong bg-surface px-4 text-sm font-medium hover:border-ink-soft">
+      <Printer size={16} aria-hidden="true" /> Print
+    </button>
+  </div>
+
+  <h1 class="mt-4 text-2xl font-semibold sm:text-3xl print:mt-0 print:text-xl">{brand.name} quick reference</h1>
+  <p class="mt-1 text-sm text-ink-soft">Starting settings for event volunteers. Menu names from the {brand.basedOn} manual; your model may differ.</p>
+
+  <div class="qr mt-6 grid gap-8 md:grid-cols-2 print:mt-3 print:grid-cols-2 print:gap-5">
+    <section aria-labelledby="qr-photo">
+      <h2 id="qr-photo" class="border-b border-ink pb-1 text-lg font-semibold">Photo: set once</h2>
+      <dl class="mt-2 text-sm">
+        {photo.cards.map((c) => (
+          <div class="grid grid-cols-[9rem_1fr] gap-2 border-b border-line py-1.5">
+            <dt class="text-ink-soft">{c.setting}</dt><dd class="font-medium">{forBrand(c.start, brand.id)}</dd>
+          </div>
+        ))}
+      </dl>
+      <h3 class="mt-5 font-semibold">Photo: by situation</h3>
+      <dl class="mt-1 text-sm">
+        {photo.scenarios.map((s) => (
+          <div class="border-b border-line py-1.5">
+            <dt class="font-medium">{s.title}</dt>
+            <dd class="text-ink-soft">{pick(['Aperture', 'Min. shutter', 'Shutter', 'ISO', 'Exposure comp.'], s.values)}</dd>
+          </div>
+        ))}
+      </dl>
+      <p class="mt-3 text-sm font-medium">Ask the event lead before using flash. No flash during prayers or arti unless allowed.</p>
+    </section>
+
+    <section aria-labelledby="qr-video">
+      <h2 id="qr-video" class="border-b border-ink pb-1 text-lg font-semibold">Video: set once</h2>
+      <dl class="mt-2 text-sm">
+        {video.cards.map((c) => (
+          <div class="grid grid-cols-[9rem_1fr] gap-2 border-b border-line py-1.5">
+            <dt class="text-ink-soft">{c.setting}</dt><dd class="font-medium">{forBrand(c.start, brand.id)}</dd>
+          </div>
+        ))}
+      </dl>
+      <h3 class="mt-5 font-semibold">Video: by situation</h3>
+      <dl class="mt-1 text-sm">
+        {video.scenarios.map((s) => (
+          <div class="border-b border-line py-1.5">
+            <dt class="font-medium">{s.title}</dt>
+            <dd class="text-ink-soft">{pick(['Format', 'Shutter', 'Aperture', 'Support'], s.values)}</dd>
+          </div>
+        ))}
+      </dl>
+      <p class="mt-3 text-sm font-medium">Bring 3 charged batteries and a spare card. Wear headphones.</p>
+    </section>
+  </div>
+
+  <p class="mt-6 text-xs text-ink-soft">Full guide: Photo Settings and Video Settings pages. Official manual: {brand.manualUrl}</p>
+</Base>
+
+<style>
+  @media print {
+    @page { margin: 12mm; }
+    :global(body) { font-size: 10px; }
+    :global(main) { padding: 0 !important; max-width: none !important; }
+    .qr :global(.text-sm) { font-size: 9.5px; line-height: 1.35; }
+    .qr :global(.py-1\.5) { padding-top: 2px; padding-bottom: 2px; }
+  }
+</style>

@@ -1,0 +1,71 @@
+---
+/**
+ * Example-shot gallery for one gallery slug (see src/data/galleries.ts).
+ * Thumbnails are fixed 4:3 so the grid never jumps; tapping one opens the
+ * full photo in the lightbox (←/→/Esc, swipe). Without JavaScript the link
+ * simply opens the large image.
+ */
+import { Picture, getImage } from 'astro:assets';
+import { loadGallery } from '../lib/gallery';
+import Lightbox from './Lightbox.astro';
+
+interface Props {
+  slug: string;
+  headingLevel?: 2 | 3;
+}
+const { slug, headingLevel = 3 } = Astro.props;
+const H = `h${headingLevel}` as 'h2' | 'h3';
+
+const sections = await Promise.all(
+  loadGallery(slug).map(async (section) => ({
+    ...section,
+    shots: await Promise.all(
+      section.shots.map(async (shot) => ({
+        ...shot,
+        large: await getImage({ src: shot.image, width: Math.min(1600, shot.image.width), format: 'webp', quality: 80 }),
+      })),
+    ),
+  })),
+);
+---
+
+<div class="space-y-10" data-lightbox-group>
+  {
+    sections.map((section) => (
+      <section aria-labelledby={`sec-${slug}-${section.slug}`}>
+        <div class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+          <H id={`sec-${slug}-${section.slug}`} class="text-lg font-semibold">{section.title}</H>
+          <span class="text-xs font-medium uppercase tracking-wider text-ink-soft">{section.shotType}</span>
+        </div>
+        <p class="mt-1 max-w-prose text-sm text-ink-soft">{section.capture}</p>
+        <ul class="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4 sm:gap-3">
+          {section.shots.map((shot) => (
+            <li>
+              <a
+                href={shot.large.src}
+                data-lightbox-item
+                data-caption={shot.caption}
+                data-width={shot.large.attributes.width}
+                data-height={shot.large.attributes.height}
+                class="block overflow-hidden rounded-sm bg-muted no-underline focus-visible:outline-offset-2"
+              >
+                <Picture
+                  src={shot.image}
+                  alt={shot.caption}
+                  formats={['avif', 'webp']}
+                  widths={[240, 360, 480, 720]}
+                  sizes="(min-width: 1024px) 240px, (min-width: 640px) 33vw, 50vw"
+                  loading="lazy"
+                  decoding="async"
+                  class="aspect-[4/3] h-auto w-full object-cover"
+                />
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    ))
+  }
+</div>
+
+<Lightbox />

@@ -1,0 +1,50 @@
+---
+import Base from '../layouts/Base.astro';
+import { CalendarDays, Camera, Video, ChevronRight } from '@lucide/astro';
+import { summary } from '../data/events';
+import { url } from '../lib/url';
+
+const s = summary();
+const entries = [
+  { href: 'events/', title: 'Events', body: 'Which events need coverage, how many people, and example shots for each.', Icon: CalendarDays },
+  { href: 'photo-settings/', title: 'Photo Settings', body: 'Plain-language starting settings for Sony, Canon, and Nikon.', Icon: Camera },
+  { href: 'video-settings/', title: 'Video Settings', body: 'Frame rate, focus, sound, and white balance, step by step.', Icon: Video },
+];
+---
+
+<Base>
+  <h1 class="text-4xl font-semibold sm:text-5xl">Event Shot Lists</h1>
+  <p class="mt-4 max-w-prose text-lg text-ink-soft">
+    One place for media volunteers to see what each event needs, what good shots look like, and how to set up the camera.
+  </p>
+
+  <dl class="mt-8 flex flex-wrap gap-x-8 gap-y-3 border-y border-line py-4" aria-label="Annual summary">
+    <div><dt class="text-sm text-ink-soft">Events a year</dt><dd class="text-2xl font-semibold">{s.total}</dd></div>
+    <div><dt class="text-sm text-ink-soft">Photo only</dt><dd class="text-2xl font-semibold">{s.photoOnly}</dd></div>
+    <div><dt class="text-sm text-ink-soft">Photo &amp; video</dt><dd class="text-2xl font-semibold">{s.photoVideo}</dd></div>
+  </dl>
+
+  <ul class="mt-10 grid gap-3 sm:grid-cols-3 sm:gap-4">
+    {
+      entries.map(({ href, title, body, Icon }) => (
+        <li>
+          <a
+            href={url(href)}
+            class="group flex h-full flex-col rounded-md border border-line bg-surface p-5 text-ink no-underline hover:border-accent hover:text-ink hover:no-underline"
+          >
+            <Icon size={22} class="text-ink-soft group-hover:text-accent" aria-hidden="true" />
+            <span class="mt-4 flex items-center justify-between text-lg font-semibold">
+              {title}
+              <ChevronRight size={18} class="text-ink-soft group-hover:text-accent" aria-hidden="true" />
+            </span>
+            <span class="mt-1 text-sm text-ink-soft">{body}</span>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+
+  <p class="mt-10 text-sm text-ink-soft">
+    Also: <a href={url('murti/')}>Murti reference shots</a> · <a href={url('quick-reference/')}>Printable quick reference</a>
+  </p>
+</Base>

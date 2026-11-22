@@ -1,0 +1,144 @@
+---
+import Base from '../../layouts/Base.astro';
+import CoverageBadge from '../../components/CoverageBadge.astro';
+import Legend from '../../components/Legend.astro';
+import { ChevronRight } from '@lucide/astro';
+import { events, SEASONS, formatStaffList, summary, STAFFING_FOOTNOTE } from '../../data/events';
+import { url } from '../../lib/url';
+
+const s = summary();
+const bySeason = SEASONS.map((season) => ({ season, items: events.filter((e) => e.season === season) }));
+const coverageFilters = [
+  { value: 'all', label: 'All' },
+  { value: 'photo', label: 'Photo only' },
+  { value: 'video', label: 'Photo & Video' },
+];
+---
+
+<Base title="Events" description="All events by season, with coverage type and recommended staffing.">
+  <h1 class="text-3xl font-semibold sm:text-4xl">Events</h1>
+  <p class="mt-3 max-w-prose text-ink-soft">
+    {s.total} events a year · {s.photoOnly} photo only · {s.photoVideo} photo &amp; video. Tap an event for staffing and example shots.
+  </p>
+
+  <div class="mt-8 grid gap-4" id="filters">
+    <fieldset>
+      <legend class="text-sm font-semibold">Season</legend>
+      <div class="mt-2 flex flex-wrap gap-2" data-filter-group="season">
+        <button type="button" data-value="all" aria-pressed="true" class="filter-btn">All</button>
+        {SEASONS.map((season) => <button type="button" data-value={season} aria-pressed="false" class="filter-btn">{season}</button>)}
+      </div>
+    </fieldset>
+    <fieldset>
+      <legend class="text-sm font-semibold">Coverage</legend>
+      <div class="mt-2 flex flex-wrap gap-2" data-filter-group="coverage">
+        {coverageFilters.map((f, i) => <button type="button" data-value={f.value} aria-pressed={i === 0 ? 'true' : 'false'} class="filter-btn">{f.label}</button>)}
+      </div>
+    </fieldset>
+  </div>
+
+  <p class="mt-6 text-sm text-ink-soft" aria-live="polite" id="result-count">Showing all {s.total} events</p>
+
+  <div class="mt-2 space-y-10">
+    {
+      bySeason.map(({ season, items }) => (
+        <section data-season-group={season} aria-labelledby={`season-${season}`}>
+          <h2 id={`season-${season}`} class="border-b border-line pb-2 text-sm font-semibold uppercase tracking-wider text-ink-soft">
+            {season}
+          </h2>
+          <ul class="divide-y divide-line">
+            {items.map((e) => (
+              <li data-event data-season={e.season} data-coverage={e.coverage === 'Photo Only' ? 'photo' : 'video'}>
+                <a
+                  href={url(`events/${e.slug}/`)}
+                  class="group flex items-center gap-3 py-4 no-underline text-ink hover:no-underline hover:text-ink hover:bg-surface -mx-2 px-2 rounded-sm"
+                >
+                  <div class="min-w-0 flex-1">
+                    <div class="flex flex-wrap items-center gap-x-3 gap-y-1">
+                      <span class="font-semibold group-hover:text-accent-ink group-hover:underline">{e.name}</span>
+                      <CoverageBadge coverage={e.coverage} />
+                    </div>
+                    <dl class="mt-1.5 grid gap-0.5 text-sm text-ink-soft sm:grid-cols-[6rem_1fr]">
+                      <dt class="font-medium text-ink">Photo</dt>
+                      <dd>{formatStaffList(e.photo)}</dd>
+                      {e.video.length > 0 && (
+                        <>
+                          <dt class="font-medium text-ink">Video</dt>
+                          <dd>{formatStaffList(e.video)}</dd>
+                        </>
+                      )}
+                    </dl>
+                  </div>
+                  <ChevronRight size={20} class="shrink-0 text-ink-soft" aria-hidden="true" />
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))
+    }
+  </div>
+
+  <p id="no-results" class="mt-6 hidden text-ink-soft">No events match these filters.</p>
+
+  <div class="mt-12 space-y-4">
+    <Legend />
+    <p class="text-sm italic text-ink-soft">{STAFFING_FOOTNOTE}</p>
+  </div>
+</Base>
+
+<style>
+  .filter-btn {
+    min-height: 2.75rem;
+    padding: 0 1rem;
+    border: 1px solid var(--color-line-strong);
+    border-radius: var(--radius-sm);
+    background: var(--color-surface);
+    color: var(--color-ink);
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+  .filter-btn:hover {
+    border-color: var(--color-ink-soft);
+  }
+  .filter-btn[aria-pressed="true"] {
+    background: var(--color-ink);
+    border-color: var(--color-ink);
+    color: #fff;
+  }
+</style>
+
+<script>
+  const state: Record<string, string> = { season: 'all', coverage: 'all' };
+  const rows = document.querySelectorAll<HTMLElement>('[data-event]');
+  const groups = document.querySelectorAll<HTMLElement>('[data-season-group]');
+  const count = document.getElementById('result-count')!;
+  const empty = document.getElementById('no-results')!;
+
+  function apply() {
+    let shown = 0;
+    rows.forEach((row) => {
+      const ok =
+        (state.season === 'all' || row.dataset.season === state.season) &&
+        (state.coverage === 'all' || row.dataset.coverage === state.coverage);
+      row.hidden = !ok;
+      if (ok) shown++;
+    });
+    groups.forEach((g) => {
+      g.hidden = !g.querySelector('[data-event]:not([hidden])');
+    });
+    count.textContent = shown === rows.length ? `Showing all ${shown} events` : `Showing ${shown} of ${rows.length} events`;
+    empty.classList.toggle('hidden', shown > 0);
+  }
+
+  document.querySelectorAll<HTMLElement>('[data-filter-group]').forEach((group) => {
+    const key = group.dataset.filterGroup!;
+    group.addEventListener('click', (ev) => {
+      const btn = (ev.target as HTMLElement).closest<HTMLButtonElement>('button[data-value]');
+      if (!btn) return;
+      group.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', String(b === btn)));
+      state[key] = btn.dataset.value!;
+      apply();
+    });
+  });
+</script>

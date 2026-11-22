@@ -1,0 +1,13 @@
+---
+import BrandText from './BrandText.astro';
+import type { SettingCard } from '../data/brands';
+
+interface Props { card: SettingCard; }
+const { card } = Astro.props;
+---
+<li class="flex flex-col rounded-md border border-line bg-surface p-4">
+  <h3 class="text-sm font-semibold uppercase tracking-wider text-ink-soft">{card.setting}</h3>
+  <p class="mt-1.5 text-lg font-semibold leading-snug"><BrandText value={card.start} /></p>
+  <p class="mt-3 text-sm"><span class="font-semibold">Why: </span>{card.why}</p>
+  <p class="mt-2 text-sm text-ink-soft"><span class="font-semibold text-ink">If it looks wrong: </span><BrandText value={card.fix} /></p>
+</li>

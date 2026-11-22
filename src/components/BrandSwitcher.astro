@@ -1,0 +1,41 @@
+---
+import { brands, DEFAULT_BRAND } from '../data/brands';
+---
+<div class="no-print sticky top-0 z-20 mt-6 -mx-4 border-b border-line bg-page px-4 py-3 sm:-mx-6 sm:px-6">
+  <div class="flex items-center gap-3">
+    <span id="brand-label" class="text-sm font-semibold">Camera</span>
+    <div role="group" aria-labelledby="brand-label" class="inline-flex rounded-sm border border-line-strong bg-surface p-0.5" data-brand-switcher>
+      {brands.map((b) => (
+        <button
+          type="button"
+          data-brand-value={b.id}
+          aria-pressed={b.id === DEFAULT_BRAND ? 'true' : 'false'}
+          class="brand-btn min-h-10 min-w-[4.5rem] rounded-[3px] px-4 text-sm font-medium"
+        >{b.name}</button>
+      ))}
+    </div>
+  </div>
+</div>
+
+<style>
+  .brand-btn { color: var(--color-ink-soft); }
+  .brand-btn:hover { color: var(--color-ink); }
+  .brand-btn[aria-pressed="true"] { background: var(--color-ink); color: #fff; }
+</style>
+
+<script>
+  const KEY = 'esl-brand';
+  const root = document.documentElement;
+  const buttons = document.querySelectorAll<HTMLButtonElement>('[data-brand-value]');
+
+  function setBrand(id: string, save: boolean) {
+    root.dataset.brand = id;
+    buttons.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.brandValue === id)));
+    if (save) {
+      try { localStorage.setItem(KEY, id); } catch {}
+    }
+  }
+
+  setBrand(root.dataset.brand || 'sony', false); // the head script already applied any saved choice
+  buttons.forEach((b) => b.addEventListener('click', () => setBrand(b.dataset.brandValue!, true)));
+</script>

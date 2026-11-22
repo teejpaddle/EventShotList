@@ -1,0 +1,93 @@
+---
+import Base from '../layouts/Base.astro';
+import BrandSwitcher from '../components/BrandSwitcher.astro';
+import ManualNote from '../components/ManualNote.astro';
+import SettingCard from '../components/SettingCard.astro';
+import ScenarioCard from '../components/ScenarioCard.astro';
+import MenuTable from '../components/MenuTable.astro';
+import { TriangleAlert } from '@lucide/astro';
+import { triangle, modeAdvice, cards, flashNote, scenarios, menus } from '../data/photo-settings';
+import { url } from '../lib/url';
+
+const toc = [
+  { id: 'basics', label: 'The basics' },
+  { id: 'settings', label: 'Starting settings' },
+  { id: 'scenarios', label: 'By situation' },
+  { id: 'menus', label: 'Where to find it' },
+];
+---
+
+<Base title="Photo Settings" description="Plain-language photo settings for Sony, Canon, and Nikon, for event volunteers.">
+  <h1 class="text-3xl font-semibold sm:text-4xl">Photo Settings</h1>
+  <p class="mt-3 max-w-prose text-ink-soft">
+    Starting settings for event photos, explained simply. Pick your camera brand and the menu names below will match it.
+  </p>
+
+  <BrandSwitcher />
+
+  <nav aria-label="On this page" class="mt-6">
+    <ul class="flex flex-wrap gap-x-5 gap-y-1 text-sm">
+      {toc.map((t) => <li><a href={`#${t.id}`} class="inline-flex min-h-11 items-center">{t.label}</a></li>)}
+    </ul>
+  </nav>
+
+  <section id="basics" class="mt-8 scroll-mt-24" aria-labelledby="basics-h">
+    <h2 id="basics-h" class="text-2xl font-semibold">The basics</h2>
+    <p class="mt-2 max-w-prose text-ink-soft">
+      Three settings control how bright a photo is. Each one also changes how the photo looks, so changing one means
+      adjusting another to keep the same brightness.
+    </p>
+    <ul class="mt-5 grid gap-3 sm:grid-cols-3">
+      {
+        triangle.map((t) => (
+          <li class="rounded-md border border-line bg-surface p-4">
+            <h3 class="font-semibold">{t.name}</h3>
+            <p class="mt-1 text-sm">{t.what}</p>
+            <p class="mt-2 text-sm text-ink-soft">{t.effect}</p>
+            <p class="mt-3 text-xs font-semibold uppercase tracking-wider text-ink-soft">{t.brighter}</p>
+          </li>
+        ))
+      }
+    </ul>
+
+    <div class="mt-6 max-w-prose">
+      <h3 class="text-lg font-semibold">{modeAdvice.title}</h3>
+      {modeAdvice.body.map((p) => <p class="mt-2 text-ink-soft">{p}</p>)}
+    </div>
+  </section>
+
+  <section id="settings" class="mt-14 scroll-mt-24" aria-labelledby="settings-h">
+    <h2 id="settings-h" class="text-2xl font-semibold">Starting settings</h2>
+    <p class="mt-2 max-w-prose text-ink-soft">Set these once before the event. Each card says why, and what to change if the photos look wrong.</p>
+    <ul class="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      {cards.map((card) => <SettingCard card={card} />)}
+    </ul>
+
+    <aside class="mt-6 rounded-md border border-ink bg-surface p-4 sm:p-5" aria-labelledby="flash-h">
+      <h3 id="flash-h" class="flex items-center gap-2 font-semibold">
+        <TriangleAlert size={18} aria-hidden="true" />
+        {flashNote.title}
+      </h3>
+      <ul class="mt-2 list-disc space-y-1 pl-5 text-sm">
+        {flashNote.points.map((p) => <li>{p}</li>)}
+      </ul>
+    </aside>
+  </section>
+
+  <section id="scenarios" class="mt-14 scroll-mt-24" aria-labelledby="scenarios-h">
+    <h2 id="scenarios-h" class="text-2xl font-semibold">By situation</h2>
+    <p class="mt-2 max-w-prose text-ink-soft">Starting points for common moments. Adjust from here based on what you see on the screen.</p>
+    <ul class="mt-5 grid gap-4 lg:grid-cols-2">
+      {scenarios.map((s) => <ScenarioCard scenario={s} />)}
+    </ul>
+  </section>
+
+  <section id="menus" class="mt-14 scroll-mt-24" aria-labelledby="menus-h">
+    <h2 id="menus-h" class="text-2xl font-semibold">Where to find it on your camera</h2>
+    <div class="mt-4"><ManualNote /></div>
+    <div class="mt-4"><MenuTable rows={menus} /></div>
+    <p class="mt-6 text-sm">
+      Want a one-page version? See the <a href={url('quick-reference/')}>printable quick reference</a>.
+    </p>
+  </section>
+</Base>

@@ -1,0 +1,99 @@
+---
+import Base from '../layouts/Base.astro';
+import BrandSwitcher from '../components/BrandSwitcher.astro';
+import BrandText from '../components/BrandText.astro';
+import ManualNote from '../components/ManualNote.astro';
+import SettingCard from '../components/SettingCard.astro';
+import ScenarioCard from '../components/ScenarioCard.astro';
+import MenuTable from '../components/MenuTable.astro';
+import { basics, storageNote, cards, logNote, longRecording, scenarios, menus } from '../data/video-settings';
+import { url } from '../lib/url';
+
+const toc = [
+  { id: 'basics', label: 'The basics' },
+  { id: 'settings', label: 'Starting settings' },
+  { id: 'long', label: 'Long recordings' },
+  { id: 'scenarios', label: 'By situation' },
+  { id: 'menus', label: 'Where to find it' },
+];
+---
+
+<Base title="Video Settings" description="Plain-language video settings for Sony, Canon, and Nikon, for event volunteers.">
+  <h1 class="text-3xl font-semibold sm:text-4xl">Video Settings</h1>
+  <p class="mt-3 max-w-prose text-ink-soft">
+    Starting settings for event video, explained simply. Pick your camera brand and the menu names below will match it.
+  </p>
+
+  <BrandSwitcher />
+
+  <nav aria-label="On this page" class="mt-6">
+    <ul class="flex flex-wrap gap-x-5 gap-y-1 text-sm">
+      {toc.map((t) => <li><a href={`#${t.id}`} class="inline-flex min-h-11 items-center">{t.label}</a></li>)}
+    </ul>
+  </nav>
+
+  <section id="basics" class="mt-8 scroll-mt-24" aria-labelledby="basics-h">
+    <h2 id="basics-h" class="text-2xl font-semibold">The basics</h2>
+    <p class="mt-2 max-w-prose text-ink-soft">
+      Video is many photos per second. A few settings decide how smooth it looks, and they should stay fixed for a
+      whole clip so the look doesn’t change halfway through.
+    </p>
+    <ul class="mt-5 grid gap-3 sm:grid-cols-3">
+      {
+        basics.map((b) => (
+          <li class="rounded-md border border-line bg-surface p-4">
+            <h3 class="font-semibold">{b.name}</h3>
+            <p class="mt-1 text-sm">{b.what}</p>
+            <p class="mt-2 text-sm text-ink-soft">{b.effect}</p>
+          </li>
+        ))
+      }
+    </ul>
+    <p class="mt-4 max-w-prose text-sm text-ink-soft">{storageNote}</p>
+  </section>
+
+  <section id="settings" class="mt-14 scroll-mt-24" aria-labelledby="settings-h">
+    <h2 id="settings-h" class="text-2xl font-semibold">Starting settings</h2>
+    <p class="mt-2 max-w-prose text-ink-soft">Set these before you press record. Each card says why, and what to change if the footage looks wrong.</p>
+    <ul class="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      {cards.map((card) => <SettingCard card={card} />)}
+    </ul>
+
+    <aside class="mt-6 rounded-md border border-line bg-surface p-4 sm:p-5" aria-labelledby="log-h">
+      <h3 id="log-h" class="font-semibold">{logNote.title}</h3>
+      <p class="mt-2 max-w-prose text-sm text-ink-soft">{logNote.body}</p>
+      <p class="mt-2 text-sm text-ink-soft"><BrandText value={logNote.brand} /></p>
+    </aside>
+  </section>
+
+  <section id="long" class="mt-14 scroll-mt-24" aria-labelledby="long-h">
+    <h2 id="long-h" class="text-2xl font-semibold">Long recordings: limits, heat, and batteries</h2>
+    <dl class="mt-5 grid gap-x-8 gap-y-5 sm:grid-cols-2">
+      {
+        longRecording.map((l) => (
+          <div>
+            <dt class="font-semibold">{l.title}</dt>
+            <dd class="mt-1 text-sm text-ink-soft">{l.body}</dd>
+          </div>
+        ))
+      }
+    </dl>
+  </section>
+
+  <section id="scenarios" class="mt-14 scroll-mt-24" aria-labelledby="scenarios-h">
+    <h2 id="scenarios-h" class="text-2xl font-semibold">By situation</h2>
+    <p class="mt-2 max-w-prose text-ink-soft">Starting points for common shoots. Adjust from here based on what you see and hear.</p>
+    <ul class="mt-5 grid gap-4 lg:grid-cols-2">
+      {scenarios.map((s) => <ScenarioCard scenario={s} />)}
+    </ul>
+  </section>
+
+  <section id="menus" class="mt-14 scroll-mt-24" aria-labelledby="menus-h">
+    <h2 id="menus-h" class="text-2xl font-semibold">Where to find it on your camera</h2>
+    <div class="mt-4"><ManualNote /></div>
+    <div class="mt-4"><MenuTable rows={menus} /></div>
+    <p class="mt-6 text-sm">
+      Want a one-page version? See the <a href={url('quick-reference/')}>printable quick reference</a>.
+    </p>
+  </section>
+</Base>

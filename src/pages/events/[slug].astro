@@ -1,0 +1,78 @@
+---
+import Base from '../../layouts/Base.astro';
+import CoverageBadge from '../../components/CoverageBadge.astro';
+import StaffList from '../../components/StaffList.astro';
+import Legend from '../../components/Legend.astro';
+import Gallery from '../../components/Gallery.astro';
+import { ArrowLeft } from '@lucide/astro';
+import { events, getEvent, STAFFING_FOOTNOTE, type EventItem } from '../../data/events';
+import { galleries } from '../../data/galleries';
+import { url } from '../../lib/url';
+
+export function getStaticPaths() {
+  return events.map((event) => ({ params: { slug: event.slug }, props: { event } }));
+}
+
+interface Props { event: EventItem; }
+const { event } = Astro.props;
+const parent = event.parent ? getEvent(event.parent) : undefined;
+const gallery = event.gallery ? galleries[event.gallery] : undefined;
+---
+
+<Base title={event.name} description={`${event.coverage} coverage plan and example shots for ${event.name}.`}>
+  <a href={url('events/')} class="inline-flex min-h-11 items-center gap-1 text-sm font-medium no-underline hover:underline">
+    <ArrowLeft size={16} aria-hidden="true" /> All events
+  </a>
+
+  <header class="mt-2">
+    <p class="text-sm font-medium uppercase tracking-wider text-ink-soft">{event.season}</p>
+    <h1 class="mt-1 text-3xl font-semibold sm:text-4xl">{event.name}</h1>
+    <div class="mt-3"><CoverageBadge coverage={event.coverage} /></div>
+    {
+      parent && (
+        <p class="mt-3 text-sm text-ink-soft">
+          Mahila program of <a href={url(`events/${parent.slug}/`)}>{parent.name}</a>.
+        </p>
+      )
+    }
+  </header>
+
+  <section class="mt-10" aria-labelledby="staffing">
+    <h2 id="staffing" class="text-xl font-semibold">Staffing</h2>
+    <div class="mt-4 grid gap-4 sm:grid-cols-2">
+      <StaffList title="Photography" staff={event.photo} empty="—" />
+      <StaffList title="Videography" staff={event.video} empty="Not needed. This is a photo-only event." />
+    </div>
+    <p class="mt-3 text-sm italic text-ink-soft">{STAFFING_FOOTNOTE}</p>
+    <details class="mt-4 group">
+      <summary class="inline-flex min-h-11 items-center text-sm font-medium text-accent">What do eSide, iSide, Primary and Secondary mean?</summary>
+      <div class="mt-2"><Legend /></div>
+    </details>
+  </section>
+
+  <section class="mt-12" aria-labelledby="shots">
+    <h2 id="shots" class="text-xl font-semibold">Example shots</h2>
+    {
+      gallery ? (
+        <>
+          <p class="mt-2 max-w-prose text-ink-soft">
+            {gallery.intro}
+            {event.gallery === 'samaiyo' && ' These examples are shared by all samaiyo-style events.'}
+            {' '}Tap a photo to see it full size.
+          </p>
+          <div class="mt-8">
+            <Gallery slug={event.gallery!} />
+          </div>
+        </>
+      ) : (
+        <div class="mt-4 rounded-md border border-dashed border-line-strong bg-surface p-5 text-ink-soft">
+          <p>No example shots yet for this event.</p>
+          <p class="mt-2">
+            Until then, use the <a href={url('photo-settings/#scenario-outdoor')}>outdoor daylight photo settings</a> and the{' '}
+            <a href={url('video-settings/#scenario-walking')}>walking or outdoor video settings</a>.
+          </p>
+        </div>
+      )
+    }
+  </section>
+</Base>

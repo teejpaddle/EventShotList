@@ -1,0 +1,17 @@
+---
+import type { MenuRow } from '../data/brands';
+import { brands } from '../data/brands';
+
+interface Props { rows: MenuRow[]; }
+const { rows } = Astro.props;
+---
+<dl class="divide-y divide-line rounded-md border border-line bg-surface">
+  {rows.map((r) => (
+    <div class="grid gap-1 p-4 sm:grid-cols-[14rem_1fr] sm:gap-6">
+      <dt class="text-sm font-semibold">{r.setting}</dt>
+      <dd class="text-sm text-ink-soft">
+        {brands.map((b) => <span data-brand-only={b.id}>{r.path[b.id]}</span>)}
+      </dd>
+    </div>
+  ))}
+</dl>

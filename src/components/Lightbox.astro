@@ -1,0 +1,194 @@
+---
+import { X, ChevronLeft, ChevronRight } from '@lucide/astro';
+---
+
+<dialog id="lightbox" aria-label="Photo viewer" class="lightbox">
+  <div class="lb-inner">
+    <div class="lb-top">
+      <p class="lb-count" aria-live="polite" data-lb-count></p>
+      <button type="button" class="lb-btn" data-lb-close aria-label="Close photo viewer">
+        <X size={24} aria-hidden="true" />
+      </button>
+    </div>
+    <figure class="lb-figure">
+      <img data-lb-img alt="" />
+      <figcaption data-lb-caption></figcaption>
+    </figure>
+    <div class="lb-nav">
+      <button type="button" class="lb-btn" data-lb-prev aria-label="Previous photo">
+        <ChevronLeft size={28} aria-hidden="true" />
+      </button>
+      <button type="button" class="lb-btn" data-lb-next aria-label="Next photo">
+        <ChevronRight size={28} aria-hidden="true" />
+      </button>
+    </div>
+  </div>
+</dialog>
+
+<style>
+  .lightbox {
+    width: 100vw;
+    height: 100dvh;
+    max-width: none;
+    max-height: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: #0b0f17;
+    color: #f1f5f9;
+  }
+  .lightbox::backdrop {
+    background: #0b0f17;
+  }
+  .lb-inner {
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    height: 100%;
+  }
+  .lb-top,
+  .lb-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem 0.75rem;
+  }
+  .lb-count {
+    font-size: 0.875rem;
+    color: #cbd5e1;
+    padding-left: 0.5rem;
+  }
+  .lb-figure {
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    padding: 0 0.75rem;
+    touch-action: pan-y pinch-zoom;
+  }
+  .lb-figure img {
+    max-width: 100%;
+    max-height: calc(100dvh - 10rem);
+    object-fit: contain;
+    user-select: none;
+  }
+  .lb-figure figcaption {
+    font-size: 0.9375rem;
+    color: #e2e8f0;
+    text-align: center;
+  }
+  .lb-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 9999px;
+    color: #f1f5f9;
+    background: transparent;
+  }
+  .lb-btn:hover {
+    background: rgb(255 255 255 / 0.1);
+  }
+  .lb-btn:focus-visible {
+    outline: 2px solid #93c5fd;
+    outline-offset: 2px;
+  }
+  /* On wide screens, put the arrows at the sides of the photo. */
+  @media (min-width: 768px) {
+    .lb-nav {
+      position: absolute;
+      inset: 50% 0 auto 0;
+      transform: translateY(-50%);
+      pointer-events: none;
+      padding: 0 1rem;
+    }
+    .lb-nav .lb-btn {
+      pointer-events: auto;
+    }
+    .lb-figure img {
+      max-height: calc(100dvh - 8rem);
+      max-width: calc(100vw - 9rem);
+    }
+  }
+</style>
+
+<script>
+  const dialog = document.getElementById('lightbox') as HTMLDialogElement | null;
+  const items = Array.from(document.querySelectorAll<HTMLAnchorElement>('[data-lightbox-item]'));
+
+  if (dialog && items.length) {
+    const img = dialog.querySelector<HTMLImageElement>('[data-lb-img]')!;
+    const caption = dialog.querySelector<HTMLElement>('[data-lb-caption]')!;
+    const counter = dialog.querySelector<HTMLElement>('[data-lb-count]')!;
+    let index = 0;
+    let opener: HTMLElement | null = null;
+
+    const preload = (i: number) => {
+      const a = items[(i + items.length) % items.length];
+      if (a) new Image().src = a.href;
+    };
+
+    const show = (i: number) => {
+      index = (i + items.length) % items.length;
+      const a = items[index];
+      img.src = a.href;
+      img.alt = a.dataset.caption ?? '';
+      if (a.dataset.width) img.width = Number(a.dataset.width);
+      if (a.dataset.height) img.height = Number(a.dataset.height);
+      caption.textContent = a.dataset.caption ?? '';
+      counter.textContent = `${index + 1} of ${items.length}`;
+      preload(index + 1);
+      preload(index - 1);
+    };
+
+    items.forEach((a, i) =>
+      a.addEventListener('click', (e) => {
+        if (e.metaKey || e.ctrlKey || e.shiftKey) return; // let people open in a new tab
+        e.preventDefault();
+        opener = a;
+        show(i);
+        dialog.showModal();
+        document.documentElement.style.overflow = 'hidden';
+      }),
+    );
+
+    dialog.querySelector('[data-lb-prev]')!.addEventListener('click', () => show(index - 1));
+    dialog.querySelector('[data-lb-next]')!.addEventListener('click', () => show(index + 1));
+    dialog.querySelector('[data-lb-close]')!.addEventListener('click', () => dialog.close());
+
+    dialog.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') { e.preventDefault(); show(index - 1); }
+      if (e.key === 'ArrowRight') { e.preventDefault(); show(index + 1); }
+    });
+
+    dialog.addEventListener('close', () => {
+      document.documentElement.style.overflow = '';
+      img.removeAttribute('src');
+      opener?.focus();
+    });
+
+    // Swipe left/right to change photos.
+    let startX = 0;
+    let startY = 0;
+    let swiped = false;
+    const fig = dialog.querySelector<HTMLElement>('.lb-figure')!;
+    fig.addEventListener('pointerdown', (e) => { startX = e.clientX; startY = e.clientY; swiped = false; });
+    fig.addEventListener('pointerup', (e) => {
+      const dx = e.clientX - startX;
+      const dy = e.clientY - startY;
+      if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+        swiped = true;
+        show(index + (dx < 0 ? 1 : -1));
+      }
+    });
+
+    // Tap on the dark area around the photo closes the viewer (but not after a swipe).
+    dialog.addEventListener('click', (e) => {
+      if (swiped) { swiped = false; return; }
+      const t = e.target as HTMLElement;
+      if (t === dialog || t.classList.contains('lb-figure')) dialog.close();
+    });
+  }
+</script>
